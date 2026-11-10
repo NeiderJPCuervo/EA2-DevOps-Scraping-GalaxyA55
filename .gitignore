@@ -17,3 +17,6 @@ tmp/
 # Archivos de bloqueo de LibreOffice / Word
 .~lock.*
 ~$*
+
+# Datos recolectados para el informe (se regeneran)
+informe/datos.json
