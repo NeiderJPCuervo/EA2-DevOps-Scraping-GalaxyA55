@@ -1,0 +1,10 @@
+{
+  "herramienta": "BeautifulSoup",
+  "registros": 119,
+  "paginas_bloqueadas_en_vivo": 3,
+  "fuente": [
+    "html_selenium"
+  ],
+  "segundos": 12.1,
+  "fecha": "2026-10-25T14:13:30"
+}

@@ -1,0 +1,19 @@
+# Entornos y cachés
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Salidas generadas en el pipeline
+site/
+entrega/
+tmp/
+
+# Archivos de bloqueo de LibreOffice / Word
+.~lock.*
+~$*

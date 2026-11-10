@@ -1,0 +1,167 @@
+{
+  "publicaciones_totales": 119,
+  "publicaciones_a55": 30,
+  "accesorios_u_otros": 89,
+  "precio": {
+    "count": 30.0,
+    "mean": 1051543.3333333333,
+    "std": 446862.08805427863,
+    "min": 460000.0,
+    "25%": 752475.0,
+    "50%": 874950.0,
+    "75%": 1175000.0,
+    "max": 2199000.0
+  },
+  "coef_variacion_pct": 42.495831972777665,
+  "pct_envio_gratis": 90.0,
+  "pct_full": 0.0,
+  "pct_con_descuento": 3.3333333333333335,
+  "descuento_promedio_pct": 24.0,
+  "descuento_max_pct": 24.0,
+  "pct_reacondicionado": 80.0,
+  "por_condicion": [
+    {
+      "condicion": "Nuevo",
+      "count": 5,
+      "min": 1500000,
+      "median": 1895180.0,
+      "max": 2199000
+    },
+    {
+      "condicion": "Caja abierta",
+      "count": 1,
+      "min": 1400000,
+      "median": 1400000.0,
+      "max": 1400000
+    },
+    {
+      "condicion": "Usado",
+      "count": 24,
+      "min": 460000,
+      "median": 829950.0,
+      "max": 1300000
+    }
+  ],
+  "por_condicion_capacidad": [
+    {
+      "condicion": "Caja abierta",
+      "capacidad_gb": 256.0,
+      "count": 1,
+      "median": 1400000.0
+    },
+    {
+      "condicion": "Nuevo",
+      "capacidad_gb": 128.0,
+      "count": 2,
+      "median": 2024260.0
+    },
+    {
+      "condicion": "Nuevo",
+      "capacidad_gb": 256.0,
+      "count": 3,
+      "median": 1895180.0
+    },
+    {
+      "condicion": "Usado",
+      "capacidad_gb": 128.0,
+      "count": 1,
+      "median": 700000.0
+    },
+    {
+      "condicion": "Usado",
+      "capacidad_gb": 256.0,
+      "count": 19,
+      "median": 850000.0
+    }
+  ],
+  "top_vendedores": {
+    "Sin identificar": 30
+  },
+  "mas_barato": [
+    {
+      "titulo": "Samsung Galaxy A55 5g Dual Sim 256 Gb  8 Gb Ram",
+      "precio_actual": 460000,
+      "vendedor": "Sin identificar"
+    },
+    {
+      "titulo": "Samsung Galaxy A55 5g, 256 Gb, Azul Oscuro",
+      "precio_actual": 689900,
+      "vendedor": "Sin identificar"
+    },
+    {
+      "titulo": "Samsung Galaxy A55 5g 5g Dual Sim 256 Gb Celeste 12 Gb Ram",
+      "precio_actual": 700000,
+      "vendedor": "Sin identificar"
+    }
+  ],
+  "mas_caro": [
+    {
+      "titulo": "Samsung Galaxy A55 5g Sm-a556eds 8gb 128gb Dual Sim Duos",
+      "precio_actual": 2199000,
+      "vendedor": "Sin identificar"
+    },
+    {
+      "titulo": "Samsung Galaxy A55 5g Sm-a556eds 8gb 256gb Dual Sim Duos",
+      "precio_actual": 2119000,
+      "vendedor": "Sin identificar"
+    },
+    {
+      "titulo": "Samsung Galaxy A55 256gb 8gb Awesome Iceblue",
+      "precio_actual": 1895180,
+      "vendedor": "Sin identificar"
+    }
+  ],
+  "metricas_herramientas": {
+    "selenium": {
+      "herramienta": "Selenium",
+      "registros": 123,
+      "paginas": 3,
+      "verificaciones_manuales": 0,
+      "segundos": 79.9,
+      "fecha": "2026-10-25T14:12:58"
+    },
+    "bs4": {
+      "herramienta": "BeautifulSoup",
+      "registros": 119,
+      "paginas_bloqueadas_en_vivo": 3,
+      "fuente": [
+        "html_selenium"
+      ],
+      "segundos": 12.1,
+      "fecha": "2026-10-25T14:13:30"
+    },
+    "scrapy": {
+      "herramienta": "Scrapy",
+      "registros": 119,
+      "descartados": 4,
+      "paginas": 3,
+      "bloqueo_en_vivo": true,
+      "origen": "web",
+      "segundos": 14.9,
+      "fecha": "2026-10-25T14:14:10"
+    }
+  },
+  "detalle_selenium": {
+    "url": "https://www.mercadolibre.com.co/smartphone-samsung-galaxy-a55-5g-a556e-128-gb-awesome-navy/p/MCO2074789748#polycard_client=search-desktop&be_origin=backend&overlay_label=not_apply&search_layout=grid&position=5&type=product&tracking_id=0074a6ac-6124-4c47-9c96-4ac4b2e3fea2&overlay_label_capability=not_apply&wid=MCO1734748015&sid=search",
+    "titulo": "Smartphone Samsung Galaxy A55 5g A556e 128 Gb Awesome Navy",
+    "condicion_y_ventas": "Nuevo",
+    "precio": 1849520,
+    "moneda": "COP",
+    "rating": null,
+    "n_opiniones": null,
+    "vendedor": null,
+    "stock": "(+25 disponibles)",
+    "especificaciones": {
+      "Marca": "Samsung",
+      "Modelo": "Samsung Galaxy A55 5G",
+      "Color": "Awesome navy",
+      "Con IMEI": "Sí",
+      "Compañía telefónica": "Liberado",
+      "Es Dual SIM": "Sí",
+      "Peso": "335 g",
+      "Altura x Ancho": "6 cm x 11 cm"
+    },
+    "opiniones": [],
+    "fecha_extraccion": "2026-10-25T14:12:58"
+  }
+}
