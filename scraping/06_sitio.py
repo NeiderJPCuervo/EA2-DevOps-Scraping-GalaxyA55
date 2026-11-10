@@ -63,6 +63,17 @@ def kpi(valor, etiqueta):
     return f'<div class="kpi"><b>{valor}</b><span>{etiqueta}</span></div>'
 
 
+def fecha_captura(resumen):
+    """Fecha en que Selenium capturó el HTML (no la fecha del build)."""
+    selenium = resumen.get("metricas_herramientas", {}).get("selenium")
+    if not selenium:
+        # En CI el resumen se escribe en EA2_SALIDA, donde no está la métrica de
+        # Selenium: se lee la versionada junto al HTML capturado.
+        ruta = config.RAW_DIR.parent / "metricas_selenium.json"
+        selenium = json.loads(ruta.read_text(encoding="utf-8")) if ruta.exists() else {}
+    return selenium.get("fecha", "")[:10]
+
+
 def construir(resumen, tel):
     medianas = {c["condicion"]: c for c in resumen["por_condicion"]}
     tarjetas = [
@@ -101,7 +112,7 @@ def construir(resumen, tel):
         origen += (f' · <a href="https://github.com/{REPO}/actions/runs/{ejecucion}">'
                    f'ejecución n.º {os.environ.get("GITHUB_RUN_NUMBER", "")}</a>')
     construido = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    fecha_datos = resumen.get("metricas_herramientas", {}).get("selenium", {}).get("fecha", "")[:10]
+    fecha_datos = fecha_captura(resumen)
 
     return f"""<!doctype html>
 <html lang="es">
