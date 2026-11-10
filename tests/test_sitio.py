@@ -34,3 +34,10 @@ def test_escapa_html_de_los_titulos():
     pagina = sitio.construir(resumen, tel)
     assert "<script>" not in pagina
     assert "A55 &lt;script&gt;" in pagina
+
+
+def test_fecha_de_captura_sin_metricas_en_el_resumen():
+    """En CI resumen.json no trae la métrica de Selenium; se usa la versionada."""
+    sitio = cargar_script("06_sitio.py")
+    assert sitio.fecha_captura({}) == "2026-10-25"
+    assert sitio.fecha_captura({"metricas_herramientas": {"selenium": {"fecha": "2026-11-01T10:00"}}}) == "2026-11-01"
