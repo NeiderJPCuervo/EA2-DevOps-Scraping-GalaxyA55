@@ -1,20 +1,22 @@
 """Prueba de regresión del análisis: debe reproducir las cifras de la EA1."""
 import json
-import os
-import subprocess
 import sys
 
 import pandas as pd
 import pytest
 
-from conftest import SCRAPING, cargar_script
+from conftest import cargar_script
 
 
 @pytest.fixture(scope="module")
 def resumen(salida):
-    subprocess.run([sys.executable, "02_bs4_listado.py", "--local"], cwd=SCRAPING,
-                   env=os.environ | {"EA2_SALIDA": str(salida)}, check=True,
-                   capture_output=True, timeout=120)
+    # Se ejecuta en el mismo proceso para que la cobertura cuente 02_bs4_listado.py
+    argv = sys.argv
+    sys.argv = ["02_bs4_listado.py", "--local"]
+    try:
+        cargar_script("02_bs4_listado.py").main()
+    finally:
+        sys.argv = argv
     cargar_script("04_analisis.py").main()
     return json.loads((salida / "data" / "resumen.json").read_text(encoding="utf-8"))
 
