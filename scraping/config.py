@@ -4,13 +4,17 @@ Todos los scripts importan desde aquí la URL, los selectores CSS y las rutas
 de salida, de modo que si Mercado Libre cambia su HTML basta con ajustar
 este archivo.
 """
+import os
 from pathlib import Path
 
 # --- Rutas del proyecto -----------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-RAW_DIR = DATA_DIR / "raw"          # HTML capturado por Selenium
-FIG_DIR = BASE_DIR / "figuras"
+RAW_DIR = BASE_DIR / "data" / "raw"  # HTML capturado por Selenium (entrada versionada)
+# EA2_SALIDA permite escribir los resultados fuera del repositorio (pruebas y CI)
+# sin sobrescribir los datos versionados. Sin la variable se usa data/ y figuras/.
+_SALIDA = os.environ.get("EA2_SALIDA")
+DATA_DIR = Path(_SALIDA) / "data" if _SALIDA else BASE_DIR / "data"
+FIG_DIR = Path(_SALIDA) / "figuras" if _SALIDA else BASE_DIR / "figuras"
 for d in (DATA_DIR, RAW_DIR, FIG_DIR):
     d.mkdir(parents=True, exist_ok=True)
 
