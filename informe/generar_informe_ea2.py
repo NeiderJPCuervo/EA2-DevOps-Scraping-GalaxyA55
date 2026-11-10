@@ -705,7 +705,6 @@ def metodologia(doc, D, R, M, pruebas_por_archivo, fig_flujo):
         ("git push -u origin <rama>", "Publicar la rama"),
         ("gh pr create / gh pr checks --watch", "Abrir el pull request y seguir el CI"),
         ("gh pr merge --merge --delete-branch", "Fusionar con un commit de merge y borrar la rama"),
-        ("gh release create v1.0.0", "Publicar la versión final"),
     ], anchos=[6.6, 9.6])
 
     doc.add_heading("5.3 Colaboración en GitHub: issues, ramas y pull requests", 2)
@@ -803,8 +802,8 @@ def resultados(doc, D, R, M, fig_ejec):
     tipos_txt = ", ".join(f"{n} {t}" for t, n in tipos.most_common())
     parrafo(doc, f"De los {M['commits']} commits, {M['merges']} son commits de merge de pull requests y "
             f"{M['commits'] - M['merges']} son cambios de trabajo ({tipos_txt}). Como cada PR se fusionó con un "
-            f"commit de merge, el historial de main conserva qué cambios entraron juntos y desde qué rama. Las "
-            f"etiquetas {', '.join(D['tags'])} marcan el punto de partida y la versión entregada.")
+            f"commit de merge, el historial de main conserva qué cambios entraron juntos y desde qué rama. La "
+            f"etiqueta {D['tags'][0]} marca el punto de partida heredado de la EA1.")
     figura(doc, "Página principal del repositorio en GitHub", recorte("01_repo.png"),
            "Captura del repositorio público con el README, las insignias de CI y Deploy y el enlace al tablero.")
     figura(doc, "Pull requests del proyecto", recorte("03_pulls.png", alto=1700),
@@ -1005,7 +1004,7 @@ def bibliografia(doc):
 def anexo(doc, D):
     doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
     doc.add_heading("Anexo A. Código fuente e implementación", 1)
-    parrafo(doc, f"Todo el código está en {D['url_repo']} (versión {D['tags'][-1] if D['tags'] else ''}) y en el "
+    parrafo(doc, f"Todo el código está en {D['url_repo']} (rama main, commit {D['commits'][-1]['hash']}) y en el "
             "archivo ZIP que acompaña este informe. La estructura del repositorio es:")
     codigo(doc, [
         "EA2-DevOps-Scraping-GalaxyA55/",
