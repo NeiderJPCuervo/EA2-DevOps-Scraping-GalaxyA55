@@ -1,0 +1,96 @@
+# Integración continua: cada cambio que llega a main o a un pull request se
+# valida con lint, pruebas automatizadas y una ejecución completa del pipeline
+# de datos sobre el HTML capturado por Selenium (sin peticiones a Mercado Libre).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruebas:
+    name: Pruebas (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13"]
+    env:
+      EA2_SALIDA: ${{ github.workspace }}/salida
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v5
+
+      - name: Instalar Python ${{ matrix.python }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Revisar estilo (ruff)
+        run: ruff check . --output-format=github
+
+      - name: Ejecutar pruebas (pytest)
+        run: pytest --cov --cov-report=term --cov-report=xml --junitxml=reporte-pruebas.xml
+
+      - name: Ejecutar el pipeline de datos fuera de línea
+        working-directory: scraping
+        run: |
+          python 02_bs4_listado.py --local
+          cd ml_scrapy
+          scrapy crawl galaxy_a55 -a origen=local -s LOG_LEVEL=WARNING \
+            -s DOWNLOAD_DELAY=0 -s AUTOTHROTTLE_ENABLED=False
+          cd ..
+          python 04_analisis.py
+
+      - name: Publicar el resumen en la ejecución
+        run: |
+          python - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          import json, os
+          r = json.load(open(os.path.join(os.environ["EA2_SALIDA"], "data", "resumen.json"), encoding="utf-8"))
+          cop = lambda x: f"${x:,.0f}".replace(",", ".")
+          print("### Resultado del análisis (Python ${{ matrix.python }})\n")
+          print("| Indicador | Valor |\n|---|---|")
+          print(f"| Publicaciones extraídas | {r['publicaciones_totales']} |")
+          print(f"| Publicaciones del Galaxy A55 | {r['publicaciones_a55']} |")
+          print(f"| Precio mediano | {cop(r['precio']['50%'])} |")
+          for c in r["por_condicion"]:
+              print(f"| Mediana {c['condicion'].lower()} (n={c['count']}) | {cop(c['median'])} |")
+          print(f"| Envío gratis | {r['pct_envio_gratis']:.0f} % |")
+          EOF
+
+      - name: Guardar resultados como artefacto
+        if: matrix.python == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-analisis
+          path: |
+            salida/
+            coverage.xml
+            reporte-pruebas.xml
+          retention-days: 14
+
+  # Check único que exige la protección de la rama main
+  ci:
+    name: ci
+    needs: pruebas
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar que todas las pruebas pasaron
+        run: test "${{ needs.pruebas.result }}" = "success"

@@ -1,5 +1,6 @@
 """Funciones de limpieza y parseo compartidas (BeautifulSoup)."""
 import re
+
 from bs4 import BeautifulSoup
 
 from config import SEL_LISTADO
