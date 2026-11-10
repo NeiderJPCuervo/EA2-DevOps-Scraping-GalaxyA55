@@ -61,7 +61,7 @@ SEL_LISTADO = {
                         "s span.andes-money-amount__fraction"],
     "descuento":   ["span.poly-price__discount-polylabel", "span.andes-money-amount__discount",
                     "span.poly-price__disc_label", "span.ui-search-price__discount"],
-    "envio":       ["div.poly-component__shipping-v2", "div.poly-component__shipping", "p.ui-search-item__shipping"],
+    "envio":       ["div.poly-component__shipping", "p.ui-search-item__shipping"],
     "vendedor":    ["span.poly-component__seller", "p.ui-search-official-store-label"],
     "rating":      ["span.poly-component__review-compacted span.polylabel-label",
                     "span.poly-reviews__rating", "span.ui-search-reviews__rating-number"],
