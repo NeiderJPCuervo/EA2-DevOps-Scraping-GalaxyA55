@@ -32,12 +32,12 @@ jobs:
       GITHUB_SHA_VALIDADO: ${{ github.event.workflow_run.head_sha || github.sha }}
     steps:
       - name: Descargar el commit validado por CI
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.GITHUB_SHA_VALIDADO }}
 
       - name: Instalar Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -60,10 +60,10 @@ jobs:
           python 06_sitio.py
 
       - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Empaquetar el sitio
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
@@ -77,4 +77,4 @@ jobs:
     steps:
       - name: Desplegar
         id: despliegue
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
