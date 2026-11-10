@@ -23,7 +23,7 @@ COOKIES_ENABLED = True
 ITEM_PIPELINES = {"ml_scrapy.pipelines.LimpiezaPipeline": 300}
 FEEDS = {
     str(config.DATA_DIR / "scrapy_listado.csv"): {
-        "format": "csv", "encoding": "utf8", "overwrite": True,
+        "format": "csv", "encoding": "utf8", "mode": "overwrite",
     },
 }
 FEED_EXPORT_FIELDS = [
