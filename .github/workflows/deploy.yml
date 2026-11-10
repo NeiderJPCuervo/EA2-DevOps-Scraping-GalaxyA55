@@ -1,0 +1,80 @@
+# Despliegue continuo: cuando el workflow CI termina con éxito sobre main, se
+# reconstruyen los datos y el tablero web y se publican en GitHub Pages.
+# Si CI falla, este workflow no despliega nada.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Construir el tablero
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EA2_SALIDA: ${{ github.workspace }}/salida
+      EA2_SITIO: ${{ github.workspace }}/site
+      # El commit que CI validó, no el último de main en este momento
+      GITHUB_SHA_VALIDADO: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - name: Descargar el commit validado por CI
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.GITHUB_SHA_VALIDADO }}
+
+      - name: Instalar Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Regenerar datos, figuras y sitio
+        working-directory: scraping
+        env:
+          GITHUB_SHA: ${{ env.GITHUB_SHA_VALIDADO }}
+        run: |
+          python 02_bs4_listado.py --local
+          cd ml_scrapy
+          scrapy crawl galaxy_a55 -a origen=local -s LOG_LEVEL=WARNING \
+            -s DOWNLOAD_DELAY=0 -s AUTOTHROTTLE_ENABLED=False
+          cd ..
+          python 04_analisis.py
+          python 06_sitio.py
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empaquetar el sitio
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  desplegar:
+    name: Publicar en GitHub Pages
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Desplegar
+        id: despliegue
+        uses: actions/deploy-pages@v4
