@@ -30,10 +30,10 @@ jobs:
       EA2_SALIDA: ${{ github.workspace }}/salida
     steps:
       - name: Descargar el código
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Instalar Python ${{ matrix.python }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -76,7 +76,7 @@ jobs:
 
       - name: Guardar resultados como artefacto
         if: matrix.python == '3.12'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: resultados-analisis
           path: |
