@@ -1,0 +1,26 @@
+[project]
+name = "ea2-devops-scraping-galaxy-a55"
+version = "1.0.0"
+description = "Scraper del Samsung Galaxy A55 en Mercado Libre Colombia con flujo DevOps (EA2)"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["scraping"]
+omit = ["scraping/01_selenium_navegador.py"]   # requiere un navegador real con sesión gráfica
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["data", "figuras"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E402"]   # settings.py y las pruebas ajustan sys.path antes de importar
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "parsers", "ml_scrapy", "conftest"]
