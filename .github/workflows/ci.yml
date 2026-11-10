@@ -76,7 +76,7 @@ jobs:
 
       - name: Guardar resultados como artefacto
         if: matrix.python == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: resultados-analisis
           path: |
