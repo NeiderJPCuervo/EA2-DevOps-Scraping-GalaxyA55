@@ -36,10 +36,11 @@ FIG_DIR = RAIZ / "figuras"
 TMP = Path(tempfile.mkdtemp(prefix="ea2_informe_"))
 
 # --- Datos de portada --------------------------------------------------------
-AUTOR = "John Neider Cuervo Quintero"
+AUTORES = ["John Neider Cuervo Quintero", "Yuri Marcela Cuervo Quintero"]
 INSTITUCION = "Institución Universitaria Digital de Antioquia (IU Digital)"
 PROGRAMA = "Ingeniería de Software y Datos"
 ASIGNATURA = "Programación para Análisis de Datos (PREICA2602B020048)"
+ASIGNATURA_APA = "PREICA2602B020048: Programación para Análisis de Datos"
 ACTIVIDAD = "Evidencia de aprendizaje 2"
 DOCENTE = "Andrés Felipe Palacio"
 CIUDAD = "Medellín"
@@ -122,6 +123,11 @@ def campo_pagina(run):
 
 def encabezado_y_pie(seccion):
     seccion.different_first_page_header_footer = True
+    p = seccion.first_page_header.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    r = p.add_run()
+    campo_pagina(r)
+    r.font.size = Pt(11)
     p = seccion.header.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     r = p.add_run("Flujo DevOps · Scraper del Galaxy A55 en Mercado Libre")
@@ -447,46 +453,31 @@ def figura_ejecuciones(ejec):
 
 # --- Secciones -----------------------------------------------------------------
 def portada(doc, fecha, D):
-    banda = doc.add_table(rows=1, cols=1)
-    bordes_tabla(banda, visibles=False)
-    c = banda.cell(0, 0)
-    sombrear(c, HEX_TINTA)
-    banda.rows[0]._tr.get_or_add_trPr().append(_xml("w:trHeight", val=int(Cm(9.5).twips), hRule="atLeast"))
-    lineas = [
-        ("INFORME TÉCNICO · " + ACTIVIDAD.upper(), 9, True, RGBColor(0x7F, 0xD1, 0xC9), 30),
-        ("Flujo de trabajo DevOps para un proyecto de web scraping", 24, True, BLANCO, 10),
-        ("Git, GitHub y CI/CD con GitHub Actions sobre el scraper del Samsung Galaxy A55 en Mercado Libre",
-         13, False, BLANCO, 6),
-        ("Git  ·  GitHub  ·  GitHub Actions  ·  GitHub Pages  ·  pytest", 10.5, False,
-         RGBColor(0xB8, 0xC4, 0xD6), 16),
-    ]
-    p = c.paragraphs[0]
-    for i, (texto, tam, neg, color, antes) in enumerate(lineas):
-        if i:
-            p = c.add_paragraph()
-        p.paragraph_format.space_before = Pt(antes)
-        p.paragraph_format.left_indent = Cm(0.8)
-        p.paragraph_format.right_indent = Cm(0.8)
-        r = p.add_run(texto)
-        r.font.size, r.bold, r.font.color.rgb = Pt(tam), neg, color
-    anchos_tabla(banda, [16.2])
+    """Portada de trabajo de estudiante según APA 7: centrada, a doble espacio y sin adornos."""
 
-    for _ in range(3):
-        doc.add_paragraph()
-    datos = [("Autor", AUTOR), ("Docente", DOCENTE), ("Asignatura", ASIGNATURA), ("Programa", PROGRAMA),
-             ("Institución", INSTITUCION), ("Repositorio", D["url_repo"]), ("Tablero publicado", D["url_pages"]),
-             ("Lugar y fecha", f"{CIUDAD}, {fecha}")]
-    t = doc.add_table(rows=len(datos), cols=2)
-    bordes_tabla(t, visibles=False)
-    for i, (etiqueta, valor) in enumerate(datos):
-        izq, der = t.cell(i, 0), t.cell(i, 1)
-        bordes_celda(izq, top=(4, HEX_LINEA))
-        bordes_celda(der, top=(4, HEX_LINEA))
-        r = izq.paragraphs[0].add_run(etiqueta.upper())
-        r.bold, r.font.size, r.font.color.rgb = True, Pt(8.5), ACENTO
-        der.paragraphs[0].paragraph_format.space_after = Pt(1)
-        der.paragraphs[0].add_run(valor).font.size = Pt(10.5 if valor.startswith("http") else 11)
-    anchos_tabla(t, [4.2, 12])
+    def linea(texto="", negrita=False, antes=0):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.line_spacing = 2.0
+        p.paragraph_format.space_before = Pt(antes)
+        p.paragraph_format.space_after = Pt(0)
+        if texto:
+            r = p.add_run(texto)
+            r.bold = negrita
+            r.font.size = Pt(12)
+            r.font.color.rgb = RGBColor(0, 0, 0)
+
+    # Título en negrita, en la mitad superior de la página
+    linea("Flujo de trabajo DevOps para un proyecto de web scraping:", negrita=True, antes=110)
+    linea("Git, GitHub y CI/CD con GitHub Actions sobre el scraper", negrita=True)
+    linea("del Samsung Galaxy A55 en Mercado Libre", negrita=True)
+    linea()
+    linea(" y ".join(AUTORES))
+    linea(PROGRAMA)
+    linea(INSTITUCION.replace(" (IU Digital)", ""))
+    linea(ASIGNATURA_APA)
+    linea(DOCENTE)
+    linea(fecha)
     doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
 
@@ -935,7 +926,7 @@ def conclusiones(doc, M):
     vinetas(doc, [
         "El pipeline procesa una captura fija del 25 de octubre de 2026: verifica el código, pero no actualiza los "
         "precios. La captura en vivo sigue siendo manual.",
-        "Trabajé solo, así que los pull requests no tuvieron revisión de otra persona; en un equipo real la regla "
+        "Los pull requests se fusionaron sin la aprobación de un segundo revisor; en un equipo real la regla "
         "de protección debería exigir al menos una aprobación.",
         "La ruta de descarga en vivo de BeautifulSoup y Scrapy no se prueba en CI, por la misma razón por la que no "
         "se hace scraping en vivo.",
@@ -1088,7 +1079,7 @@ def main():
         "cobertura": D["cobertura"]["total"],
     }
     hoy = datetime.now()
-    fecha = f"{MESES[hoy.month - 1]} de {hoy.year}"
+    fecha = f"{hoy.day} de {MESES[hoy.month - 1]} de {hoy.year}"
 
     doc = Document()
     estilos(doc)
